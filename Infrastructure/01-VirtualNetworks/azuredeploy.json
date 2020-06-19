@@ -1,0 +1,632 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+         "type": "string",
+         "defaultValue": "eastus",
+        "allowedValues": [
+            "centralus",
+            "eastus",
+            "eastus2",
+            "northcentralus",
+            "southcentralus",
+            "westcentralus",
+            "westus",
+            "westus2"
+        ],
+      "metadata": {
+        "description": "List of allowed deployment regions in Azure"
+            }
+        },
+        "location_DR": {
+         "type": "string",
+         "defaultValue": "eastus",
+        "allowedValues": [
+            "centralus",
+            "eastus",
+            "eastus2",
+            "northcentralus",
+            "southcentralus",
+            "westcentralus",
+            "westus",
+            "westus2"
+        ],
+      "metadata": {
+        "description": "List of allowed deployment regions in Azure"
+            }
+        },
+        "environment": {
+            "type": "string",
+            "defaultValue": "Production",
+            "allowedValues": [
+                "Development",
+                "Testing",
+                "Production"
+            ]
+        },
+        "ipaddressspaceprefix": {
+            "type": "string",
+            "defaultValue": "10.240",
+            "metadata": {
+                "description": "Primary hub Ip Address Space"
+            }
+        },
+         "ipaddressspokespaceprefix": {
+            "type": "string",
+            "defaultValue": "10.245",
+            "metadata": {
+                "description": "Primary hub Ip Address Space"
+            }
+        },
+        "ipaddressDRSpaceprefix": {
+            "type": "string",
+            "defaultValue": "10.250",
+            "metadata": {
+                "description": "DR location ip address space"
+            }
+        },
+        "ipaddressDRSpokeSpaceprefix": {
+            "type": "string",
+            "defaultValue": "10.255",
+            "metadata": {
+                "description": "DR location ip address space"
+            }
+        },
+        "primaryhubVnetSettings": {
+            "type": "object",
+            "defaultValue": {
+                "name":"[concat('VNET', '-', 'HUB', '-', toUpper(parameters('location')))]",
+                "location": "[parameters('location')]",
+                "addressprefixes":[
+                    {
+                        "name": "primaryhubprefix",
+                        "addressPrefix" : "[concat(parameters('ipaddressspaceprefix'),'.0.0/20')]"
+                    }
+                ],
+                "subnets" :[
+                    {
+                        "name":"IB-UntrustZone",
+                        "addressPrefix":"[concat(parameters('ipaddressspaceprefix'),'.0.0/24')]"
+                    },
+                    {
+                        "name":"IB-TrustZone",
+                        "addressPrefix":"[concat(parameters('ipaddressspaceprefix'),'.1.0/24')]"
+                    },
+                    {
+                        "name":"OB-UntrustZone",
+                        "addressPrefix":"[concat(parameters('ipaddressspaceprefix'),'.2.0/24')]"
+                    },
+                    {
+                        "name":"OB-TrustZone",
+                        "addressPrefix":"[concat(parameters('ipaddressspaceprefix'),'.3.0/24')]"
+                    },
+                    {
+                        "name":"GatewaySubnet",
+                        "addressPrefix":"[concat(parameters('ipaddressspaceprefix'),'.10.0/24')]"
+                    },
+                    {
+                        "name":"MGMT",
+                        "addressPrefix":"[concat(parameters('ipaddressspaceprefix'),'.4.0/24')]"
+                    }
+                ]
+            }
+        },
+        "primarySpokeDevelopmentVnetSettings": {
+            "type": "object",
+            "defaultValue": {
+                "name":"[concat('VNET', '-', 'DEV', '-', toUpper(parameters('location')))]",
+                "location": "[parameters('location')]",
+                "addressprefixes":[
+                    {
+                        "name": "primaryspokeprefix",
+                        "addressPrefix" : "[concat(parameters('ipaddressspokespaceprefix'),'.16.0/20')]"
+                    }
+                ],
+                "subnets" :[
+                    {
+                        "name":"[concat('DEV-FE-', toUpper(parameters('location')))]",
+                        "addressPrefix":"[concat(parameters('ipaddressspokespaceprefix'),'.16.0/22')]"
+                    },
+                    {
+                        "name":"[concat('DEV-APP-', toUpper(parameters('location')))]",
+                        "addressPrefix":"[concat(parameters('ipaddressspokespaceprefix'),'.20.0/22')]"
+                    },
+                    {
+                        "name":"[concat('DEV-DB-', toUpper(parameters('location')))]",
+                        "addressPrefix":"[concat(parameters('ipaddressspokespaceprefix'),'.24.0/23')]"
+                    }
+                ]
+            }
+        },
+         "primarySpokeProductionVnetSettings": {
+            "type": "object",
+            "defaultValue": {
+                "name":"[concat('VNET', '-', 'PROD', '-', toUpper(parameters('location')))]",
+                "location": "[parameters('location')]",
+                "addressprefixes":[
+                    {
+                        "name": "primaryspokeprefix",
+                        "addressPrefix" : "[concat(parameters('ipaddressspokespaceprefix'),'.32.0/20')]"
+                    }
+                ],
+                "subnets" :[
+                    {
+                        "name":"[concat('PROD-FE-', toUpper(parameters('location')))]",
+                        "addressPrefix":"[concat(parameters('ipaddressspokespaceprefix'),'.32.0/22')]"
+                    },
+                    {
+                        "name":"[concat('PROD-APP-', toUpper(parameters('location')))]",
+                        "addressPrefix":"[concat(parameters('ipaddressspokespaceprefix'),'.36.0/22')]"
+                    },
+                    {
+                        "name":"[concat('PROD-DB-', toUpper(parameters('location')))]",
+                        "addressPrefix":"[concat(parameters('ipaddressspokespaceprefix'),'.40.0/23')]"
+                    },
+                    {
+                        "name":"[concat('PROD-DC-', toUpper(parameters('location')))]",
+                        "addressPrefix":"[concat(parameters('ipaddressspokespaceprefix'),'.42.0/24')]"
+                    }
+                    
+                ]
+            }
+        },
+         "secondaryhubVnetSettings": {
+            "type": "object",
+            "defaultValue": {
+                "name":"[concat('VNET', '-', 'HUB', '-', toUpper(parameters('location_DR'))) ]",
+                "location": "[parameters('location_DR')]",
+                "addressprefixes":[
+                    {
+                        "name": "secondaryhubprefix",
+                        "addressPrefix" : "[concat(parameters('ipaddressDRSpaceprefix'),'.0.0/20')]"
+                    }
+                ],
+                "subnets" :[
+                    {
+                        "name":"IB-UntrustZone",
+                        "addressPrefix":"[concat(parameters('ipaddressDRSpaceprefix'),'.0.0/24')]"
+                    },
+                    {
+                        "name":"IB-TrustZone",
+                        "addressPrefix":"[concat(parameters('ipaddressDRSpaceprefix'),'.1.0/24')]"
+                    },
+                    {
+                        "name":"OB-UntrustZone",
+                        "addressPrefix":"[concat(parameters('ipaddressDRSpaceprefix'),'.2.0/24')]"
+                    },
+                    {
+                        "name":"OB-TrustZone",
+                        "addressPrefix":"[concat(parameters('ipaddressDRSpaceprefix'),'.3.0/24')]"
+                    },
+                    {
+                        "name":"GatewaySubnet",
+                        "addressPrefix":"[concat(parameters('ipaddressDRSpaceprefix'),'.10.0/24')]"
+                    },
+                    {
+                        "name":"MGMT",
+                        "addressPrefix":"[concat(parameters('ipaddressDRSpaceprefix'),'.4.0/24')]"
+                    }
+                ]
+            }
+        },
+         "DRSpokeProductionVnetSettings": {
+            "type": "object",
+            "defaultValue": {
+                "name":"[concat('VNET', '-', 'PROD', '-', toUpper(parameters('location_DR')))]",
+                "location": "[parameters('location_DR')]",
+                "addressprefixes":[
+                    {
+                        "name": "primaryspokeprefix",
+                        "addressPrefix" : "[concat(parameters('ipaddressDRSpokeSpaceprefix'),'.32.0/20')]"
+                    }
+                ],
+                "subnets" :[
+                    {
+                        "name":"[concat('PROD-FE-', toUpper(parameters('location_DR')))]",
+                        "addressPrefix":"[concat(parameters('ipaddressDRSpokeSpaceprefix'),'.32.0/22')]"
+                    },
+                    {
+                        "name":"[concat('PROD-APP-', toUpper(parameters('location_DR')))]",
+                        "addressPrefix":"[concat(parameters('ipaddressDRSpokeSpaceprefix'),'.36.0/22')]"
+                    },
+                    {
+                        "name":"[concat('PROD-DB-', toUpper(parameters('location_DR')))]",
+                        "addressPrefix":"[concat(parameters('ipaddressDRSpokeSpaceprefix'),'.40.0/23')]"
+                    },
+                    {
+                        "name":"[concat('PROD-DC-', toUpper(parameters('location_DR')))]",
+                        "addressPrefix":"[concat(parameters('ipaddressDRSpokeSpaceprefix'),'.42.0/24')]"
+
+                    }
+                    
+                ]
+            }
+        },
+         "ASRSpokeProductionVnetSettings": {
+            "type": "object",
+            "defaultValue": {
+                "name":"[concat('VNET', '-', 'ASR', '-', toUpper(parameters('location_DR')))]",
+                "location": "[parameters('location_DR')]",
+                "addressprefixes":[
+                    {
+                        "name": "primaryspokeprefix",
+                        "addressPrefix" : "[concat(parameters('ipaddressDRSpokeSpaceprefix'),'.16.0/20')]"
+                    }
+                ],
+                "subnets" :[
+                    {
+                        "name":"[concat('ASR-FE-', toUpper(parameters('location_DR')))]",
+                        "addressPrefix":"[concat(parameters('ipaddressDRSpokeSpaceprefix'),'.16.0/22')]",
+                        "descption" : ""
+                    },
+                    {
+                        "name":"[concat('ASR-APP-', toUpper(parameters('location_DR')))]",
+                        "addressPrefix":"[concat(parameters('ipaddressDRSpokeSpaceprefix'),'.20.0/22')]"
+                    },
+                    {
+                        "name":"[concat('ASR-DB-', toUpper(parameters('location_DR')))]",
+                        "addressPrefix":"[concat(parameters('ipaddressDRSpokeSpaceprefix'),'.24.0/22')]"
+                    }
+    
+                ]
+            }
+        }
+        
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "name": "[parameters('primaryhubVnetSettings').name]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2019-11-01",
+            "location": "[parameters('primaryhubVnetSettings').location]",
+            "tags": {
+                "Application": "Network Infrastructure",
+                "CostCenter": "Learning-01",
+                "Department": "Training",
+                "Environment": "[parameters('environment')]"
+            },
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('primaryhubVnetSettings').addressprefixes[0].addressPrefix]"                       
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('primaryhubVnetSettings').subnets[0].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('primaryhubVnetSettings').subnets[0].addressPrefix]"
+                        }
+                    },
+                     {
+                        "name": "[parameters('primaryhubVnetSettings').subnets[1].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('primaryhubVnetSettings').subnets[1].addressPrefix]"
+                        }
+                    },
+                     {
+                        "name": "[parameters('primaryhubVnetSettings').subnets[2].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('primaryhubVnetSettings').subnets[2].addressPrefix]"
+                        }
+                    },
+                     {
+                        "name": "[parameters('primaryhubVnetSettings').subnets[3].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('primaryhubVnetSettings').subnets[3].addressPrefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('primaryhubVnetSettings').subnets[4].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('primaryhubVnetSettings').subnets[4].addressPrefix]"
+                        }
+                    }
+                ]
+            },
+            "resources": [
+                {
+                    "type": "virtualNetworkPeerings",
+                    "apiVersion": "2019-11-01",
+                    "name": "[concat(parameters('primaryhubVnetSettings').name,'-TO-',parameters('primarySpokeProductionVnetSettings').name)]",
+                    "location":"[parameters('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('primaryhubVnetSettings').name)]",
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('secondaryhubVnetSettings').name)]"
+                    ],
+                    "comments": "This is the peering from Hub to spoke",
+                    "properties": {
+                        "allowVirtualNetworkAccess": true,
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": false,
+                        "useRemoteGateways": false,
+                        "remoteVirtualNetwork": {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('primarySpokeProductionVnetSettings').name)]"
+                        }
+                    }
+                }
+            ]    
+        },
+        {
+            "name": "[parameters('primarySpokeDevelopmentVnetSettings').name]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2019-11-01",
+            "location": "[parameters('primarySpokeDevelopmentVnetSettings').location]",
+            "tags": {
+                "Application": "Network Infrastructure",
+                "CostCenter": "Learning-01",
+                "Department": "Training",
+                "Environment": "[parameters('environment')]"
+            },
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('primarySpokeDevelopmentVnetSettings').addressprefixes[0].addressPrefix]"                       
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('primarySpokeDevelopmentVnetSettings').subnets[0].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('primarySpokeDevelopmentVnetSettings').subnets[0].addressPrefix]"
+                        }
+                    },
+                     {
+                        "name": "[parameters('primarySpokeDevelopmentVnetSettings').subnets[1].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('primarySpokeDevelopmentVnetSettings').subnets[1].addressPrefix]"
+                        }
+                    },
+                     {
+                        "name": "[parameters('primarySpokeDevelopmentVnetSettings').subnets[2].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('primarySpokeDevelopmentVnetSettings').subnets[2].addressPrefix]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[parameters('primarySpokeProductionVnetSettings').name]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2019-11-01",
+            "location": "[parameters('primarySpokeProductionVnetSettings').location]",
+            "tags": {
+                "Application": "Network Infrastructure",
+                "CostCenter": "Learning-01",
+                "Department": "Training",
+                "Environment": "[parameters('environment')]"
+            },
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('primarySpokeProductionVnetSettings').addressprefixes[0].addressPrefix]"                       
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('primarySpokeProductionVnetSettings').subnets[0].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('primarySpokeProductionVnetSettings').subnets[0].addressPrefix]"
+                        }
+                    },
+                     {
+                        "name": "[parameters('primarySpokeProductionVnetSettings').subnets[1].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('primarySpokeProductionVnetSettings').subnets[1].addressPrefix]"
+                        }
+                    },
+                     {
+                        "name": "[parameters('primarySpokeProductionVnetSettings').subnets[2].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('primarySpokeProductionVnetSettings').subnets[2].addressPrefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('primarySpokeProductionVnetSettings').subnets[3].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('primarySpokeProductionVnetSettings').subnets[3].addressPrefix]"
+                        }
+                    }
+                ]
+            },
+            "resources": [
+                {
+                    "type": "virtualNetworkPeerings",
+                    "apiVersion": "2019-11-01",
+                    "name": "[concat(parameters('primarySpokeProductionVnetSettings').name,'-TO-',parameters('primaryhubVnetSettings').name)]",
+                    "location":"[parameters('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('primaryhubVnetSettings').name)]",
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('primarySpokeProductionVnetSettings').name)]"
+                    ],
+                    "comments": "This is the peering from Spoke to Hub",
+                    "properties": {
+                        "allowVirtualNetworkAccess": true,
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": false,
+                        "useRemoteGateways": false,
+                        "remoteVirtualNetwork": {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('primaryhubVnetSettings').name)]"
+                        }
+                    }
+                },
+                {
+                    "type": "virtualNetworkPeerings",
+                    "apiVersion": "2019-11-01",
+                    "name": "[concat(parameters('primarySpokeProductionVnetSettings').name,'-TO-',parameters('DRSpokeProductionVnetSettings').name)]",
+                    "location":"[parameters('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('primarySpokeProductionVnetSettings').name)]",
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('DRSpokeProductionVnetSettings').name)]"
+                    ],
+                    "comments": "This is the peering from Spoke to Hub",
+                    "properties": {
+                        "allowVirtualNetworkAccess": true,
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": false,
+                        "useRemoteGateways": false,
+                        "remoteVirtualNetwork": {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('DRSpokeProductionVnetSettings').name)]"
+                        }
+                    }
+                }
+            ]  
+        },
+        {
+            "name": "[parameters('secondaryhubVnetSettings').name]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2019-11-01",
+            "location": "[parameters('secondaryhubVnetSettings').location]",
+            "tags": {
+                "displayName": "[ parameters('secondaryhubVnetSettings').name]"
+            },
+              "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('secondaryhubVnetSettings').addressprefixes[0].addressPrefix]"
+                        
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('secondaryhubVnetSettings').subnets[0].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('secondaryhubVnetSettings').subnets[0].addressPrefix]"
+                        }
+                    },
+                     {
+                        "name": "[parameters('secondaryhubVnetSettings').subnets[1].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('secondaryhubVnetSettings').subnets[1].addressPrefix]"
+                        }
+                    },
+                     {
+                        "name": "[parameters('secondaryhubVnetSettings').subnets[2].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('secondaryhubVnetSettings').subnets[2].addressPrefix]"
+                        }
+                    },
+                     {
+                        "name": "[parameters('secondaryhubVnetSettings').subnets[3].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('secondaryhubVnetSettings').subnets[3].addressPrefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('secondaryhubVnetSettings').subnets[4].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('secondaryhubVnetSettings').subnets[4].addressPrefix]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[parameters('DRSpokeProductionVnetSettings').name]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2019-11-01",
+            "location": "[parameters('DRSpokeProductionVnetSettings').location]",
+            "tags": {
+                "displayName": "[ parameters('DRSpokeProductionVnetSettings').name]"
+            },
+              "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('DRSpokeProductionVnetSettings').addressprefixes[0].addressPrefix]"
+                        
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('DRSpokeProductionVnetSettings').subnets[0].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('DRSpokeProductionVnetSettings').subnets[0].addressPrefix]"
+                        }
+                    },
+                     {
+                        "name": "[parameters('DRSpokeProductionVnetSettings').subnets[1].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('DRSpokeProductionVnetSettings').subnets[1].addressPrefix]"
+                        }
+                    },
+                     {
+                        "name": "[parameters('DRSpokeProductionVnetSettings').subnets[2].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('DRSpokeProductionVnetSettings').subnets[2].addressPrefix]"
+                        }
+                    },
+                     {
+                        "name": "[parameters('DRSpokeProductionVnetSettings').subnets[3].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('DRSpokeProductionVnetSettings').subnets[3].addressPrefix]"
+                        }
+                    }
+                ]
+            },
+            "resources": [
+                {
+                    "type": "virtualNetworkPeerings",
+                    "apiVersion": "2019-11-01",
+                    "name": "[concat(parameters('DRSpokeProductionVnetSettings').name,'-TO-',parameters('primarySpokeProductionVnetSettings').name)]",
+                    "location":"[parameters('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('DRSpokeProductionVnetSettings').name)]",
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('primarySpokeProductionVnetSettings').name)]"
+                    ],
+                    "comments": "This is the peering from Spoke to Hub",
+                    "properties": {
+                        "allowVirtualNetworkAccess": true,
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": false,
+                        "useRemoteGateways": false,
+                        "remoteVirtualNetwork": {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('primarySpokeProductionVnetSettings').name)]"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "[parameters('ASRSpokeProductionVnetSettings').name]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2019-11-01",
+            "location": "[parameters('ASRSpokeProductionVnetSettings').location]",
+            "tags": {
+                "displayName": "[ parameters('ASRSpokeProductionVnetSettings').name]"
+            },
+              "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('ASRSpokeProductionVnetSettings').addressprefixes[0].addressPrefix]"
+                        
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('ASRSpokeProductionVnetSettings').subnets[0].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('ASRSpokeProductionVnetSettings').subnets[0].addressPrefix]"
+                        }
+                    },
+                     {
+                        "name": "[parameters('ASRSpokeProductionVnetSettings').subnets[1].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('ASRSpokeProductionVnetSettings').subnets[1].addressPrefix]"
+                        }
+                    },
+                     {
+                        "name": "[parameters('ASRSpokeProductionVnetSettings').subnets[2].name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('ASRSpokeProductionVnetSettings').subnets[2].addressPrefix]"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {}
+}
