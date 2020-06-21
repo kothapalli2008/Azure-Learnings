@@ -3,16 +3,16 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "adminUsername": {
-            "value": "GEN-UNIQUE"
+            "value": "vkothapalli"
         },
         "adminPassword": {
-            "value": "GEN-PASSWORD"
+            "value": "Mrkvk@1234567890"
         },
         "dnsPrefix": {
-            "value": "GEN-UNIQUE"
+            "value": "kkrish145"
         },
         "domainName": {
-            "value": "mydomain.local"
+            "value": "kkothapalli.info"
         }
     }
 }
