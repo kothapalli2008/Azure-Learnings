@@ -324,7 +324,50 @@
                         }
                     }
                 ]
-            }    
+            },
+            "resources": [
+                {
+                    "type": "virtualNetworkPeerings",
+                    "apiVersion": "2019-11-01",
+                    "name": "[concat(parameters('primaryhubVnetSettings').name,'-TO-',parameters('primarySpokeDevelopmentVnetSettings').name)]",
+                    "location":"[parameters('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('primaryhubVnetSettings').name)]",
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('primarySpokeDevelopmentVnetSettings').name)]"
+                    ],
+                    "comments": "This is the peering from Hub to spoke",
+                    "properties": {
+                        "allowVirtualNetworkAccess": true,
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": true,
+                        "useRemoteGateways": false,
+                        "remoteVirtualNetwork": {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('primarySpokeDevelopmentVnetSettings').name)]"
+                        }
+                    }
+                },
+                {
+                    "type": "virtualNetworkPeerings",
+                    "apiVersion": "2019-11-01",
+                    "name": "[concat(parameters('primaryhubVnetSettings').name,'-TO-',parameters('primarySpokeProductionVnetSettings').name)]",
+                    "location":"[parameters('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('primaryhubVnetSettings').name)]",
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('primarySpokeProductionVnetSettings').name)]"
+                    ],
+                    "comments": "This is the peering from Hub to spoke",
+                    "properties": {
+                        "allowVirtualNetworkAccess": true,
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": true,
+                        "useRemoteGateways": false,
+                        "remoteVirtualNetwork": {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('primarySpokeProductionVnetSettings').name)]"
+                        }
+                    }
+                }
+                
+            ]   
         },
         {
             "name": "[parameters('primarySpokeDevelopmentVnetSettings').name]",
@@ -377,6 +420,26 @@
                         "useRemoteGateways": false,
                         "remoteVirtualNetwork": {
                             "id": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('primarySpokeProductionVnetSettings').name)]"
+                        }
+                    }
+                },
+                 {
+                    "type": "virtualNetworkPeerings",
+                    "apiVersion": "2019-11-01",
+                    "name": "[concat(parameters('primarySpokeDevelopmentVnetSettings').name,'-TO-',parameters('primaryhubVnetSettings').name)]",
+                    "location":"[parameters('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('primarySpokeDevelopmentVnetSettings').name)]",
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('primaryhubVnetSettings').name)]"
+                    ],
+                    "comments": "This is the peering from Hub to spoke",
+                    "properties": {
+                        "allowVirtualNetworkAccess": true,
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": true,
+                        "useRemoteGateways": false,
+                        "remoteVirtualNetwork": {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('primaryhubVnetSettings').name)]"
                         }
                     }
                 }
@@ -441,7 +504,48 @@
                             "id": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('primarySpokeDevelopmentVnetSettings').name)]"
                         }
                     }
+                },
+                {
+                    "type": "virtualNetworkPeerings",
+                    "apiVersion": "2019-11-01",
+                    "name": "[concat(parameters('primarySpokeProductionVnetSettings').name,'-TO-',parameters('primaryhubVnetSettings').name)]",
+                    "location":"[parameters('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('primaryhubVnetSettings').name)]",
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('primarySpokeProductionVnetSettings').name)]"
+                    ],
+                    "comments": "This is the peering from Spoke to Hub",
+                    "properties": {
+                        "allowVirtualNetworkAccess": true,
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": true,
+                        "useRemoteGateways": false,
+                        "remoteVirtualNetwork": {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('primaryhubVnetSettings').name)]"
+                        }
+                    }
+                },
+                {
+                    "type": "virtualNetworkPeerings",
+                    "apiVersion": "2019-11-01",
+                    "name": "[concat(parameters('primarySpokeProductionVnetSettings').name,'-TO-',parameters('DRSpokeProductionVnetSettings').name)]",
+                    "location":"[parameters('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('DRSpokeProductionVnetSettings').name)]",
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('primarySpokeProductionVnetSettings').name)]"
+                    ],
+                    "comments": "This is the peering from Spoke to Hub",
+                    "properties": {
+                        "allowVirtualNetworkAccess": true,
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": true,
+                        "useRemoteGateways": false,
+                        "remoteVirtualNetwork": {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('DRSpokeProductionVnetSettings').name)]"
+                        }
+                    }
                 }
+
             ]  
         },
         {
@@ -495,15 +599,57 @@
                         }
                     }
                 ]
-            }
+            },
+            "resources": [
+                {
+                    "type": "virtualNetworkPeerings",
+                    "apiVersion": "2019-11-01",
+                    "name": "[concat(parameters('secondaryhubVnetSettings').name,'-TO-',parameters('DRSpokeProductionVnetSettings').name)]",
+                    "location":"[parameters('location_DR')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('DRSpokeProductionVnetSettings').name)]",
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('secondaryhubVnetSettings').name)]"
+                    ],
+                    "comments": "This is the peering from Spoke to Hub",
+                    "properties": {
+                        "allowVirtualNetworkAccess": true,
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": true,
+                        "useRemoteGateways": false,
+                        "remoteVirtualNetwork": {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('DRSpokeProductionVnetSettings').name)]"
+                        }
+                    }
+                },
+                {
+                    "type": "virtualNetworkPeerings",
+                    "apiVersion": "2019-11-01",
+                    "name": "[concat(parameters('secondaryhubVnetSettings').name,'-TO-',parameters('ASRSpokeProductionVnetSettings').name)]",
+                    "location":"[parameters('location_DR')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('ASRSpokeProductionVnetSettings').name)]",
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('secondaryhubVnetSettings').name)]"
+                    ],
+                    "comments": "This is the peering from Spoke to Hub",
+                    "properties": {
+                        "allowVirtualNetworkAccess": true,
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": true,
+                        "useRemoteGateways": false,
+                        "remoteVirtualNetwork": {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('ASRSpokeProductionVnetSettings').name)]"
+                        }
+                    }
+                }
+
+            ]
         },
         {
             "name": "[parameters('DRSpokeProductionVnetSettings').name]",
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2019-11-01",
             "location": "[parameters('DRSpokeProductionVnetSettings').location]",
-            "tags": "[parameters('virtualNetworkTags')]"
-            ,
+            "tags": "[parameters('virtualNetworkTags')]",
               "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
@@ -537,7 +683,49 @@
                         }
                     }
                 ]
-            }
+            },
+            "resources": [
+                {
+                    "type": "virtualNetworkPeerings",
+                    "apiVersion": "2019-11-01",
+                    "name": "[concat(parameters('DRSpokeProductionVnetSettings').name,'-TO-',parameters('secondaryhubVnetSettings').name)]",
+                    "location":"[parameters('location_DR')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('DRSpokeProductionVnetSettings').name)]",
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('secondaryhubVnetSettings').name)]"
+                    ],
+                    "comments": "This is the peering from Spoke to Hub",
+                    "properties": {
+                        "allowVirtualNetworkAccess": true,
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": true,
+                        "useRemoteGateways": false,
+                        "remoteVirtualNetwork": {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('secondaryhubVnetSettings').name)]"
+                        }
+                    }
+                },
+                {
+                    "type": "virtualNetworkPeerings",
+                    "apiVersion": "2019-11-01",
+                    "name": "[concat(parameters('DRSpokeProductionVnetSettings').name,'-TO-',parameters('primarySpokeProductionVnetSettings').name)]",
+                    "location":"[parameters('location_DR')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('DRSpokeProductionVnetSettings').name)]",
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('primarySpokeProductionVnetSettings').name)]"
+                    ],
+                    "comments": "This is the peering from Spoke to Hub",
+                    "properties": {
+                        "allowVirtualNetworkAccess": true,
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": true,
+                        "useRemoteGateways": false,
+                        "remoteVirtualNetwork": {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('primarySpokeProductionVnetSettings').name)]"
+                        }
+                    }
+                }
+            ]
         },
         {
             "name": "[parameters('ASRSpokeProductionVnetSettings').name]",
@@ -572,7 +760,30 @@
                         }
                     }
                 ]
-            }
+            },
+            "resources": [
+                {
+                    "type": "virtualNetworkPeerings",
+                    "apiVersion": "2019-11-01",
+                    "name": "[concat(parameters('ASRSpokeProductionVnetSettings').name,'-TO-',parameters('secondaryhubVnetSettings').name)]",
+                    "location":"[parameters('location_DR')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('ASRSpokeProductionVnetSettings').name)]",
+                        "[concat('Microsoft.Network/virtualNetworks/', parameters('secondaryhubVnetSettings').name)]"
+                    ],
+                    "comments": "This is the peering from Spoke to Hub",
+                    "properties": {
+                        "allowVirtualNetworkAccess": true,
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": true,
+                        "useRemoteGateways": false,
+                        "remoteVirtualNetwork": {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/', parameters('secondaryhubVnetSettings').name)]"
+                        }
+                    }
+                }
+                
+            ]
         }
     ],
     "outputs": {}
