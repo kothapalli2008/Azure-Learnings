@@ -8,8 +8,25 @@
         "location_DR": {
             "value": "centralus"
         },
-        "environment": {
-            "value": "Production"
+        "ipaddressspaceprefix": {
+            "value": "10.240"
+        },
+        "ipaddressspokespaceprefix": {
+            "value": "10.245"
+        },
+        "ipaddressDRSpaceprefix": {
+            "value": "10.250"
+        },
+        "ipaddressDRSpokeSpaceprefix": {
+            "value": "10.255"
+        },
+        "virtualNetworkTags": {
+            "value": {
+                "Project": "Network Infrastructure",
+                "CostCenter": "Learning-01",
+                "Department": "Training",
+                "Environment": "Production"
+            }
         }
     }
 }
