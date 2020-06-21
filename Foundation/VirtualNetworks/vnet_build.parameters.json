@@ -22,10 +22,12 @@
         },
         "virtualNetworkTags": {
             "value": {
-                "Project": "Network Infrastructure",
+                "Owner": "Krish Kothapalli",
+                "Project": "Azure Foundation",
                 "CostCenter": "Learning-01",
                 "Department": "Training",
-                "Environment": "Production"
+                "Environment": "Production",
+                "CreatedBy": "Krish Kothapalli"
             }
         }
     }
