@@ -4,7 +4,7 @@
 ***This Master template creates the following resources:***
 ============================
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://azuredeploy.net/?repository=https://github.com/kothapalli2008/Azure-Learnings/tree/master/Foundation/VirtualNetworks?ptmpl=parameters.azuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://azuredeploy.net/?repository=https://github.com/kothapalli2008/Azure-Learnings/tree/master/Foundation/VirtualNetworks?ptmpl=vnet_build.parameters.json)
 
  -2 Virtual Network
 
