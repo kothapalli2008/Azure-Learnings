@@ -4,7 +4,7 @@
 ***This Master template creates the following resources:***
 ============================
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https://raw.githubusercontent.com/kothapalli2008/Azure-Learnings/master/Foundation/ActiveDirectory/azuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)]https://azuredeploy.net/?repository=https://raw.githubusercontent.com/kothapalli2008/Azure-Learnings/master/Foundation/ActiveDirectory/azuredeploy.json)
 
  -2 Virtual Network
 
