@@ -45,7 +45,7 @@
             "metadata": {
                 "description": "The location of resources, such as templates and DSC modules, that the template depends on"
             },
-            "defaultValue": "[deployment().properties.templateLink.uri]"
+            "defaultValue": "https://raw.githubusercontent.com/kothapalli2008/Azure-Learnings/master/Foundation/ActiveDirectory/"
         },
         "_artifactsLocationSasToken": {
             "type": "securestring",
@@ -67,31 +67,37 @@
             "metadata": {
                 "description": "Size for the VM.  This sample uses premium disk and requires an 'S' sku."
             }
+        },
+        "activeDirectoryTags": {
+            "type": "object",
+            "metadata": {
+                "description": "List of all Active Directory Tags"
+            }
         }
     },
     "variables": {
         "storageAccountType": "Premium_LRS",
-        "adPDCVMName": "adPDC",
-        "adBDCVMName": "adBDC",
+        "adPDCVMName": "TXS-DC01",
+        "adBDCVMName": "TXS-DC02",
         "imagePublisher": "MicrosoftWindowsServer",
         "imageOffer": "WindowsServer",
-        "imageSKU": "2016-Datacenter",
-        "adAvailabilitySetName": "adAvailabiltySet",
-        "publicIPAddressName": "ad-lb-pip",
+        "imageSKU": "2019-Datacenter",
+        "adAvailabilitySetName": "AD-AVAILABILITYSET-EUS",
+        "publicIPAddressName": "AD-LB-EUS-PIP",
         "adLBFE": "LBFE",
         "adLBBE": "LBBE",
-        "adPDCRDPNAT": "adPDCRDP",
-        "adBDCRDPNAT": "adBDCRDP",
+        "adPDCRDPNAT": "AD-TXSDC01-RDP",
+        "adBDCRDPNAT": "AD-TXSDC02-RDP",
         "virtualNetworkName": "VNET-PROD-EASTUS",
         "virtualNetworkAddressRange": "10.245.32.0/20",
         "adSubnetName": "PROD-DC-EASTUS",
         "adSubnet": "10.245.42.0/24",
-        "adPDCNicName": "adPDCNic",
+        "adPDCNicName": "AD-TXSDC01-EUS-NIC",
         "adPDCNicIPAddress": "10.245.42.4",
-        "adBDCNicName": "adBDCNic",
+        "adBDCNicName": "AD-TXSDC02-EUS-NIC",
         "adBDCNicIPAddress": "10.245.42.5",
         "adSubnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('adSubnetName'))]",
-        "adLBName": "adLoadBalancer",
+        "adLBName": "AD-EUS-LBE",
         "adlbFEConfigID": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('adLBName'), variables('adLBFE'))]",
         "adPDCRDPNATRuleID": "[resourceId('Microsoft.Network/loadBalancers/inboundNatRules', variables('adLBName'), variables('adPDCRDPNAT'))]",
         "adBDCRDPNATRuleID": "[resourceId('Microsoft.Network/loadBalancers/inboundNatRules', variables('adLBName'), variables('adBDCRDPNAT'))]",
@@ -119,7 +125,8 @@
                 "dnsSettings": {
                     "domainNameLabel": "[parameters('dnsPrefix')]"
                 }
-            }
+            },
+            "Tags": "[parameters('activeDirectoryTags')]"
         },
         {
             "apiVersion": "2019-12-01",
@@ -132,7 +139,8 @@
             },
             "sku": {
                 "name": "Aligned"
-            }
+            },
+            "Tags": "[parameters('activeDirectoryTags')]"
         },
         {
             "name": "VNet",
@@ -213,7 +221,8 @@
                         }
                     }
                 ]
-            }
+            },
+            "Tags": "[parameters('activeDirectoryTags')]"
         },
         {
             "name": "[variables('adPDCNicName')]",
@@ -247,7 +256,8 @@
                         }
                     }
                 ]
-            }
+            },
+            "Tags": "[parameters('activeDirectoryTags')]"
         },
         {
             "name": "[variables('adBDCNicName')]",
@@ -281,7 +291,8 @@
                         }
                     }
                 ]
-            }
+            },
+            "Tags": "[parameters('activeDirectoryTags')]"
         },
         {
             "name": "[variables('adPDCVMName')]",
@@ -341,6 +352,7 @@
                     ]
                 }
             },
+            "Tags": "[parameters('activeDirectoryTags')]",
             "resources": [
                 {
                     "name": "CreateADForest",

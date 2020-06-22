@@ -9,10 +9,22 @@
             "value": "Mrkvk@1234567890"
         },
         "dnsPrefix": {
-            "value": "kkrish145"
+            "value": "krishothapallidc"
         },
         "domainName": {
-            "value": "kkothapalli.info"
+            "value": "krishkothapalli.info"
+        },
+        "activeDirectoryTags": {
+            "value": {
+                "Owner": "Krish Kothapalli",
+                "Application": "Active Directory",
+                "Project": "Azure Foundation",
+                "CostCenter": "Learning-01",
+                "Department": "Training",
+                "Environment": "Production",
+                "CreatedBy": "Krish Kothapalli"
+            }
         }
+
     }
 }
