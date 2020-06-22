@@ -1,4 +1,4 @@
-**Overview for Azure Cloud Foundation Templates:**
+**Overview for Azure Virtual Network Templates:**
 ============================
 
 ***This Master template creates the following resources:***
