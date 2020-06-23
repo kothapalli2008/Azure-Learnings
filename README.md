@@ -5,3 +5,4 @@
 
 - [ ] Install Azure AD Connect and add user as Enterprise Admin
 - [ ] Create Auto Shutdown VM'S Automation process
+- [ ]
