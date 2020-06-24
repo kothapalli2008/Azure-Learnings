@@ -8,8 +8,8 @@
 
  -2 Virtual Network
 
-Connect-AzAccount -tenant "a697981c-c242-4f40-bf3c-1eb4412918f0" -Subscription "bccffc32-27d2-4348-b7b6-4897ed061b0d" -verbose
+Connect-AzAccount -tenant "78efe786-1610-49d8-97ab-c710be9ac898" -Subscription "bccffc32-27d2-4348-b7b6-4897ed061b0d" -verbose
 
-New-AzResourceGroup -Name azure-learnings-eus-rg -Location eastus -verbose
+New-AzResourceGroup -Name azure-learnings-eus-rg -Location eastus -Tags @{"Owner"="Krish Kothapalli"; "Project"="Azure Foundation"; "Cost Center"="Learning-01"; "Department"="Training"; "Created By"="Krish Kothapalli"; "Environment"="Production"}
 
-New-AzResourceGroupDeployment -TemplateFile .\Infrastructure\01-VirtualNetworks\azuredeploy.json -TemplateParameterFile .\Infrastructure\01-VirtualNetworks\azuredeploy.parameters.json -ResourceGroupName azure-learnings-eus-rg -verbose
+ New-AzResourceGroupDeployment -TemplateFile .\VirtualNetworks\vnet_build.json -TemplateParameterFile .\VirtualNetworks\vnet_build.parameters.json -ResourceGroupName azure-learnings-eus-rg -verbose
