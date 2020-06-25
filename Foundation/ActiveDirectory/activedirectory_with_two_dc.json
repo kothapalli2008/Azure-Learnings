@@ -650,7 +650,7 @@
                 "notificationSettings": {
                     "status": "Enabled",
                     "timeInMinutes": 30,
-                    "webhookUrl": "https://outlook.office.com/webhook/676f2b88-7f58-4f40-8bc6-b5050806e30b@78efe786-1610-49d8-97ab-c710be9ac898/IncomingWebhook/cf7bf0e55f1d44ffb40e8c2a9319e415/41e1c423-d781-44aa-beeb-7ce6c1ba204b",
+                    "webhookUrl": "https://outlook.office.com/webhook/676f2b88-7f58-4f40-8bc6-b5050806e30b@78efe786-1610-49d8-97ab-c710be9ac898/IncomingWebhook/1a5d1a0c050e40a49fcbb77f62f31469/41e1c423-d781-44aa-beeb-7ce6c1ba204b",
                     "emailRecipient": "admin@kkothapalli.com"
                 },
                 "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('adPDCVMName'))]"
@@ -674,7 +674,7 @@
                 "notificationSettings": {
                     "status": "Enabled",
                     "timeInMinutes": 30,
-                    "webhookUrl": "https://outlook.office.com/webhook/676f2b88-7f58-4f40-8bc6-b5050806e30b@78efe786-1610-49d8-97ab-c710be9ac898/IncomingWebhook/cf7bf0e55f1d44ffb40e8c2a9319e415/41e1c423-d781-44aa-beeb-7ce6c1ba204b",
+                    "webhookUrl": "https://outlook.office.com/webhook/676f2b88-7f58-4f40-8bc6-b5050806e30b@78efe786-1610-49d8-97ab-c710be9ac898/IncomingWebhook/1a5d1a0c050e40a49fcbb77f62f31469/41e1c423-d781-44aa-beeb-7ce6c1ba204b",
                     "emailRecipient": "admin@kkothapalli.com"
                 },
                 "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('adBDCVMName'))]"
