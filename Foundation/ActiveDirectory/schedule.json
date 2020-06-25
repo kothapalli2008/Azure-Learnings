@@ -1,0 +1,31 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {},
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.DevTestLab/schedules",
+            "apiVersion": "2018-09-15",
+            "name": "[concat('shutdown-computevm-', 'DC02')]",
+            "location": "eastus",
+            "properties": {
+                "status": "Enabled",
+                "taskType": "ComputeVmShutdownTask",
+                "dailyRecurrence": {
+                    "time": "1900"
+                },
+                "timeZoneId": "Central Standard Time",
+                "notificationSettings": {
+                    "status": "Enabled",
+                    "timeInMinutes": 30,
+                    "webhookUrl": "https://outlook.office.com/webhook/676f2b88-7f58-4f40-8bc6-b5050806e30b@78efe786-1610-49d8-97ab-c710be9ac898/IncomingWebhook/cf7bf0e55f1d44ffb40e8c2a9319e415/41e1c423-d781-44aa-beeb-7ce6c1ba204b",
+                    "emailRecipient": "admin@kkothapalli.com"
+                },
+                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', 'DC02')]"
+            }
+        }
+    ],
+    "outputs": {}
+}
